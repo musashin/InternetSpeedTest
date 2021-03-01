@@ -16,28 +16,29 @@ class SpeedTest:
         self.speed_test = speedtest.Speedtest()
         self.logger = create_rotating_log(os.path.join(path, "speedlog.txt"))
         self.period = period
-        self.__run_test__()     #Run test once
 
-        threading.Timer(period * 60, self.__run_test__).start() #and keep repeating!
+    #def start(self):
+    #    #TODO
+    #    threading.Timer(self.period * 2, self.__run_test__).start() #and keep repeating!
 
     def get_period_in_min(self):
         return self.period
 
-    def pause(self):
+    def pause_collection(self):
         """
         Pause executing periodic tests
         :return: None
         """
-        pause = True
+        SpeedTest.pause = True
 
-    def resume(self):
+    def resume_collection(self):
         """
         resume executing periodic tests
         :return: None
         """
-        pause = False
+        SpeedTest.pause = False
 
-    def __run_test__(self):
+    def run_test(self):
         """
         Save upload/download speed, ping and test server in log file
         :return: None
@@ -45,6 +46,8 @@ class SpeedTest:
 
         if SpeedTest.pause:
             return
+
+        print("did it")
 
         best_server = self.speed_test.get_best_server()
 

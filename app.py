@@ -24,6 +24,7 @@ class AboutDialog(QtWidgets.QDialog):
         self.setLayout(self.layout)
 
 
+
 class SystemTrayIcon(QtWidgets.QSystemTrayIcon):
 
     def __init__(self, icon, parent, speed_test):
@@ -46,7 +47,14 @@ class SystemTrayIcon(QtWidgets.QSystemTrayIcon):
         self.pauseAction.triggered.connect(self.pause_data_collection)
         self.pauseAction.setStatusTip("Pause/Resume Data Collection")
 
+        #self.speed_test.start()
+        self.timer = QtCore.QTimer(self)
+        self.timer.setInterval(30000)  # Throw event timeout with an interval of 1000 milliseconds
+        self.timer.timeout.connect(self.speed_test.run_test)  # each time timer counts a second, call self.blink
+        self.timer.start()
+
         self.setContextMenu(menu)
+
 
     def about(self):
         dlg = AboutDialog(self.speed_test.get_period_in_min())
@@ -60,9 +68,9 @@ class SystemTrayIcon(QtWidgets.QSystemTrayIcon):
         self.pauseAction.setText("Resume" if self.pause else "Pause")
 
         if self.pause:
-            self.speed_test.pause()
+            self.speed_test.pause_collection()
         else:
-            self.speed_test.resume()
+            self.speed_test.resume_collection()
 
 
 @click.command()
