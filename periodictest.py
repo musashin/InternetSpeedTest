@@ -15,8 +15,13 @@ class SpeedTest:
     def __init__(self, path, period):
         self.speed_test = speedtest.Speedtest()
         self.logger = create_rotating_log(os.path.join(path, "speedlog.txt"))
+        self.period = period
         self.__run_test__()     #Run test once
+
         threading.Timer(period * 60, self.__run_test__).start() #and keep repeating!
+
+    def get_period_in_min(self):
+        return self.period
 
     def pause(self):
         """
