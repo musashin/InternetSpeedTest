@@ -4,6 +4,20 @@ import version
 import periodictest
 import click
 
+class Worker(QtCore.QRunnable):
+    '''
+    Worker thread
+    '''
+
+    def __init__(self, speed_test):
+        super(Worker, self).__init__()
+        self.speed_test = speed_test
+
+    @QtCore.pyqtSlot()
+    def run(self):
+        self.speed_test.start()
+
+
 
 class AboutDialog(QtWidgets.QDialog):
     def __init__(self, period_in_min):
@@ -54,9 +68,12 @@ class SystemTrayIcon(QtWidgets.QSystemTrayIcon):
         #self.timer.setInterval(30000)  # Throw event timeout with an interval of 1000 milliseconds
         #self.timer.timeout.connect(self.speed_test.run_test)  # each time timer counts a second, call self.blink
         #self.timer.start()
+        # Pass the function to execute
+        self.threadpool = QtCore.QThreadPool()
+        worker = Worker(speed_test)
+        self.threadpool.start(worker)
 
         self.setContextMenu(menu)
-        self.speed_test.start()
 
 
     def about(self):
@@ -85,6 +102,7 @@ def main(period, path):
 
     app = QtWidgets.QApplication(sys.argv)
     app.setQuitOnLastWindowClosed(False)
+    app.setApplicationName("Internet Speed Test")
 
     w = QtWidgets.QWidget()
     trayIcon = SystemTrayIcon(QtGui.QIcon(r'icon.png'), w, speed_test)
