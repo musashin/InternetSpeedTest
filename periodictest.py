@@ -17,9 +17,12 @@ class SpeedTest:
         self.logger = create_rotating_log(os.path.join(path, "speedlog.txt"))
         self.period = period
 
-    #def start(self):
-    #    #TODO
-    #    threading.Timer(self.period * 2, self.__run_test__).start() #and keep repeating!
+    def start(self):
+        #TODO
+        #threading.Timer(self.period * 2, self.run_test).start() #and keep repeating!
+        ticker = threading.Event()
+        while not ticker.wait(self.period * 60):
+            self.run_test()
 
     def get_period_in_min(self):
         return self.period
@@ -47,7 +50,7 @@ class SpeedTest:
         if SpeedTest.pause:
             return
 
-        print("did it")
+        print("Starting Test")
 
         best_server = self.speed_test.get_best_server()
 
@@ -57,6 +60,7 @@ class SpeedTest:
                                                                best_server['latency'],
                                                                best_server['url']))
 
+        print("Completing Test")
 
 
 @click.command()
@@ -65,6 +69,8 @@ class SpeedTest:
 def periodic_test_command(period, path):
 
     speed_test = SpeedTest(path, period)
+    speed_test.start()
+
 
 if __name__ == '__main__':
     periodic_test_command()
