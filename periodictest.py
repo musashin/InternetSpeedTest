@@ -62,7 +62,7 @@ class SpeedTest:
         if SpeedTest.pause:
             return
 
-
+        print("-- Start Test --")
         best_server = self.speed_test.get_best_server()
 
         self.logger.info("{!s}, {!s},{!s},{!s},{!s}".format(   datetime.now(),
@@ -70,7 +70,7 @@ class SpeedTest:
                                                                convert_unit(self.speed_test.upload(), SIZE_UNIT.MB),
                                                                best_server['latency'],
                                                                best_server['url']))
-
+        print("-- Stop Test --")
 
 @click.command()
 @click.argument('period', type=int, default=30)

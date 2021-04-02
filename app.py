@@ -95,7 +95,7 @@ class SystemTrayIcon(QtWidgets.QSystemTrayIcon):
 
     def about(self):
         """
-        Open the Abou tdialog box
+        Open the About dialog box
         :return:
         """
         dlg = AboutDialog(self.speed_test.get_period_in_min())
@@ -139,7 +139,7 @@ def start_tray_app(speed_test):
 
 
 @click.command()
-@click.argument('period', type=int, default=30)
+@click.argument('period_in_minutes', type=int, default=30)
 @click.argument('path', type=click.Path(exists=True))
 def main(period_in_minutes, path):
     """
