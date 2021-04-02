@@ -13,18 +13,30 @@ class SpeedTest:
     pause = False
 
     def __init__(self, path, period):
+        """
+        Constructor
+        :param path: fully qualified path to log files
+        :param period: period of text in
+        """
         self.speed_test = speedtest.Speedtest()
         self.logger = create_rotating_log(os.path.join(path, "speedlog.txt"))
         self.period = period
 
     def start(self):
-        #TODO
-        #threading.Timer(self.period * 2, self.run_test).start() #and keep repeating!
+        """
+        Periodically call the run test method
+        :return:
+        """
+
         ticker = threading.Event()
         while not ticker.wait(self.period * 60):
             self.run_test()
 
     def get_period_in_min(self):
+        """
+        Accessor for test period
+        :return: test period in minutes
+        """
         return self.period
 
     def pause_collection(self):
@@ -50,7 +62,6 @@ class SpeedTest:
         if SpeedTest.pause:
             return
 
-        print("Starting Test")
 
         best_server = self.speed_test.get_best_server()
 
@@ -59,8 +70,6 @@ class SpeedTest:
                                                                convert_unit(self.speed_test.upload(), SIZE_UNIT.MB),
                                                                best_server['latency'],
                                                                best_server['url']))
-
-        print("Completing Test")
 
 
 @click.command()
